@@ -1,4 +1,5 @@
 object TypesPlayground {
+  // References from https://speakerdeck.com/heathermiller/academese-to-english-a-practical-tour-of-scalas-type-system
 
   // Source: https://speakerdeck.com/heathermiller/academese-to-english-a-practical-tour-of-scalas-type-system
   object VarianceExample {
@@ -64,7 +65,7 @@ object TypesPlayground {
         class AnimalVet extends Vet[Animal]
 
         treatMammals(new AnimalVet)
-        
+
         class ZebraVet extends Vet[Zebra]
         // This won't compile and it's ok: with contravariance we can define that a Zebra vet
         // can't treat Mammals
@@ -72,5 +73,30 @@ object TypesPlayground {
       }
     }
 
+  }
+
+  // Source: http://stackoverflow.com/questions/4531455/whats-the-difference-between-ab-and-b-in-scala
+  object DifferenceBetweenVarianceAndBounds {
+    class Animal
+    class Dog extends Animal
+
+    class Car
+    class SportsCar extends Car
+
+    // List is obviously not bounded
+    val animals: List[Animal] = List(new Dog(), new Animal())
+    val cars: List[Car] = List(new Car(), new SportsCar())
+
+    // And since List defined with variance List[+B] A List[Dog] is also a List[Animal]
+    case class Shelter(animals: List[Animal])
+    val animalShelter: Shelter = Shelter(List(new Animal): List[Animal])
+    val dogShelter: Shelter = Shelter(List(new Dog): List[Dog])
+
+    // Bound example:
+    case class Barn[A <: Animal](animals: A*)
+
+    val animalBarn: Barn[Animal] = Barn(new Dog, new Animal)
+    // This won't compile
+    //val varBarn = Barn(new SportsCar)
   }
 }
