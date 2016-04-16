@@ -46,15 +46,13 @@ object TypesPlayground {
       object CovariantVet {
         abstract class Vet[+A]
 
-        class Elephant extends Mammal
-
-        def treatAnimal(vet: Vet[Animal]) = ???
+        def treatMammal(vet: Vet[Mammal]) = ???
 
         class ZebraVet extends Vet[Zebra]
 
         // This compile but meaning is wrong! A veterinary who can only treat Zebras
-        // shouldn't be able to treat any Animal!!!
-        treatAnimal(new ZebraVet)
+        // shouldn't be able to treat any Mammal!!!
+        treatMammal(new ZebraVet)
       }
 
       object ContravariantVet {
@@ -66,6 +64,11 @@ object TypesPlayground {
         class AnimalVet extends Vet[Animal]
 
         treatMammals(new AnimalVet)
+        
+        class ZebraVet extends Vet[Zebra]
+        // This won't compile and it's ok: with contravariance we can define that a Zebra vet
+        // can't treat Mammals
+        // treatMammals(new ZebraVet)
       }
     }
 
