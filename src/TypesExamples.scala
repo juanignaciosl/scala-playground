@@ -1,3 +1,5 @@
+import scala.collection.mutable.ArrayBuffer
+
 object TypesPlayground {
   // References from https://speakerdeck.com/heathermiller/academese-to-english-a-practical-tour-of-scalas-type-system
 
@@ -117,6 +119,54 @@ object TypesPlayground {
     object Parametrization {
       class Person[Pet]
       object Susan extends Person[Cat]
+    }
+  }
+
+  object ExistentialTypes {
+    object Description {
+      case class Fruit[T](val tooRipe: T => Boolean)
+
+      class Farm {
+        // This won't compile
+        // val fruit = new ArrayBuffer[Fruit[T]]
+
+        // This does. We leave that part unknown but safe
+        val fruit = new ArrayBuffer[Fruit[T] forSome { type T }]
+      }
+    }
+
+    object Example {
+      val strings = Array("a", "b")
+
+      object InvarianceTrouble {
+        def foo(x: Array[Any]) = println(x.length)
+        // This won't compile because Array is invariant, although our code is safe. Alernatives?
+        //foo(strings)
+      }
+
+      object TypeInferenceAlternative {
+        def foo(x: Array[Any]) = println(x.length)
+        // A) take advantage of type inference if possible
+        foo(Array("a", "b"))
+      }
+
+      object TypeParametersAlternative {
+        // B) declare with type parameters
+        def foo[T](x: Array[T]) = println(x.length)
+        foo(strings)
+      }
+
+      object ExistentialsAlternative {
+        // C) use existentials
+        def foo(x: Array[T] forSome { type T }) = println(x.length)
+        foo(strings)
+      }
+
+      object ExistentialsShorthandAlternative {
+        // C) use existentials shorthand
+        def foo(x: Array[_]) = println(x.length)
+        foo(strings)
+      }
     }
   }
 }
