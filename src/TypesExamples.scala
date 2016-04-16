@@ -99,4 +99,24 @@ object TypesPlayground {
     // This won't compile
     //val varBarn = Barn(new SportsCar)
   }
+
+  object AbstractTypeMembersVsParametrization {
+    trait Pet
+    class Cat extends Pet
+
+    object AbstractTypeMembers {
+      class Person {
+        type Pet
+      }
+
+      object Susan extends Person {
+        type Pet = Cat
+      }
+    }
+
+    object Parametrization {
+      class Person[Pet]
+      object Susan extends Person[Cat]
+    }
+  }
 }
